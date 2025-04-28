@@ -4,56 +4,60 @@ import { Label } from './ui/label'
 import { useDispatch } from 'react-redux'
 import { setSearchedQuery } from '@/redux/jobSlice'
 
-const fitlerData = [
+const filterData = [
     {
-        fitlerType: "Location",
-        array: ["Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai"," Chennai", "Ahmedabad"]
+        filterType: "Location",
+        options: ["Delhi NCR", "Bangalore", "Hydrabad", "Pune", "Mumbai", "Chennai", "Ahmedabad"]
     },
     {
-        fitlerType: "Industry",
-        array: ["Frontend Developer", "Backend Developer", "FullStack Developer"," Data Scientist", "Graphic Designer", "DevOps Engineer", "Mobile App Developer", "UI/UX Designer", "Product Manager", "Software Tester", "Cybersecurity Analyst"]
+        filterType: "Industry",
+        options: ["Frontend Developer", "Backend Developer", "FullStack Developer", "Data Scientist", "Graphic Designer", "DevOps Engineer", "Mobile App Developer", "UI/UX Designer", "Product Manager", "Software Tester", "Cybersecurity Analyst"]
     },
     {
-        fitlerType: "Salary",
-        array: ["0-40k", "40k-1lakh", "1lakh to 5lakh","5lakh to 10lakh"]
+        filterType: "Salary",
+        options: ["0-40k", "40k-1lakh", "1lakh to 5lakh", "5lakh to 10lakh"]
     },
 ]
 
 const FilterCard = () => {
     const [selectedValue, setSelectedValue] = useState('');
     const dispatch = useDispatch();
+
     const changeHandler = (value) => {
         setSelectedValue(value);
     }
-    useEffect(()=>{
-        dispatch(setSearchedQuery(selectedValue));
-    },[selectedValue]);
+
+    useEffect(() => {
+        if (selectedValue) {
+            dispatch(setSearchedQuery(selectedValue));
+        }
+    }, [selectedValue, dispatch]);
+
     return (
-        <div className='w-full bg-white p-3 rounded-md'>
-            <h1 className='font-bold text-lg'>Filter Jobs</h1>
-            <hr className='mt-3' />
+        <div className='w-full bg-white p-5 rounded-md shadow-md'>
+            <h1 className='font-bold text-lg text-gray-900'>Filter Jobs</h1>
+            <hr className='my-3' />
+            
             <RadioGroup value={selectedValue} onValueChange={changeHandler}>
-                {
-                    fitlerData.map((data, index) => (
-                        <div>
-                            <h1 className='font-bold text-lg'>{data.fitlerType}</h1>
-                            {
-                                data.array.map((item, idx) => {
-                                    const itemId = `id${index}-${idx}`
-                                    return (
-                                        <div className='flex items-center space-x-2 my-2'>
-                                            <RadioGroupItem value={item} id={itemId} />
-                                            <Label htmlFor={itemId}>{item}</Label>
-                                        </div>
-                                    )
-                                })
-                            }
+                {filterData.map((data, index) => (
+                    <div key={index} className="mb-4">
+                        <h2 className='font-semibold text-md text-gray-800'>{data.filterType}</h2>
+                        <div className='space-y-3 mt-2'>
+                            {data.options.map((item, idx) => {
+                                const itemId = `id${index}-${idx}`;
+                                return (
+                                    <div key={itemId} className='flex items-center'>
+                                        <RadioGroupItem value={item} id={itemId} className="h-4 w-4 text-[#6A38C2] border-gray-300" />
+                                        <Label htmlFor={itemId} className="ml-2 text-sm text-gray-700">{item}</Label>
+                                    </div>
+                                );
+                            })}
                         </div>
-                    ))
-                }
+                    </div>
+                ))}
             </RadioGroup>
         </div>
-    )
+    );
 }
 
-export default FilterCard
+export default FilterCard;
